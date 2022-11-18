@@ -14,10 +14,6 @@ const userRouter = require("./api/users/user.route.js")
 app.use(express.json());
 app.use("/api/users", userRouter);
 
-// app.listen(process.env.APP_PORT , ()=>{
-//     console.log("Server is up and running on PORT : ",process.env.APP_PORT);
-// });
-
-app.listen(3000 , ()=>{
-    console.log("Server is up and running on PORT : ",3000);
+app.listen(process.env.APP_PORT , ()=>{
+    console.log("Server is up and running on PORT : ",process.env.APP_PORT);
 });
