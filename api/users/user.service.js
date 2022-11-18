@@ -1,6 +1,6 @@
-const pool=require("../../config/database.js");
+const pool = require("../../config/database.js");
 
-module.exports={
+module.exports = {
     create: (data, callBack) => {
         pool.query(
             `insert into t1(firstname, lastname, gender, email, password, number)
@@ -14,7 +14,7 @@ module.exports={
                 data.number
             ],
             (errors, results, fields) => {
-                if(errors){
+                if (errors) {
                     return callBack(errors);
                 }
                 return callBack(null, results);
@@ -26,7 +26,7 @@ module.exports={
             `select id, firstname, lastname, gender, email, number from t1`,
             [],
             (errors, results, fields) => {
-                if(errors){
+                if (errors) {
                     return callBack(errors);
                 }
                 return callBack(null, results);
@@ -38,7 +38,7 @@ module.exports={
             `select id, firstname, lastname, gender, email, number from t1 where id=?`,
             [id],
             (errors, results, fields) => {
-                if(errors){
+                if (errors) {
                     return callBack(errors);
                 }
                 return callBack(null, results[0]);
@@ -58,7 +58,7 @@ module.exports={
                 data.id
             ],
             (errors, results, fields) => {
-                if(errors){
+                if (errors) {
                     return callBack(errors);
                 }
                 return callBack(null, results[0]);
@@ -67,11 +67,11 @@ module.exports={
     },
     deleteUsers: (data, callBack) => {
         pool.query(
-            `delete from t1 where id=?`,
+            `delete from t1 where id = ?`,
             [data.id],
-            (errors, results, fields) => {
-                if(errors){
-                    return callBack(errors);
+            (error, results, fields) => {
+                if (error) {
+                    callBack(error);
                 }
                 return callBack(null, results[0]);
             }
@@ -82,7 +82,7 @@ module.exports={
             `select * from t1 where email=?`,
             [email],
             (errors, results, fields) => {
-                if(errors){
+                if (errors) {
                     return callBack(errors);
 
                 }
@@ -90,5 +90,5 @@ module.exports={
             }
         )
     }
-    
+
 };

@@ -1,14 +1,14 @@
 const { create, getUsers, getUsersbyUserId, updateUsers, deleteUsers, getUsersbyUserEmail } = require("./user.service.js");
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
-const { sign }=require("jsonwebtoken");
+const { sign } = require("jsonwebtoken");
 
 module.exports = {
-    createUser: (req,res)=>{
+    createUser: (req, res) => {
         const body = req.body;
         const salt = genSaltSync(10);
         body.password = hashSync(body.password, salt);
         create(body, (err, results) => {
-            if(err){
+            if (err) {
                 console.log(err);
                 return res.status(500).json({
                     success: 0,
@@ -21,14 +21,14 @@ module.exports = {
             });
         });
     },
-    getUsersbyUserId: (req, res)=>{
+    getUsersbyUserId: (req, res) => {
         const id = req.params.id;
-        getUsersbyUserId(id, (err, results)=>{
-            if(err){
+        getUsersbyUserId(id, (err, results) => {
+            if (err) {
                 console.log(err);
                 return;
             }
-            if(!results){
+            if (!results) {
                 return res.json({
                     success: 0,
                     message: "record not found"
@@ -40,9 +40,9 @@ module.exports = {
             });
         });
     },
-    getUsers: (req,res)=>{
+    getUsers: (req, res) => {
         getUsers((err, results) => {
-            if(err){
+            if (err) {
                 console.log(err);
                 return;
             }
@@ -52,12 +52,12 @@ module.exports = {
             });
         });
     },
-    updateUsers: (req,res)=>{
+    updateUsers: (req, res) => {
         const body = req.body;
         const salt = genSaltSync(10);
         body.password = hashSync(body.password, salt);
         updateUsers(body, (err, results) => {
-            if(err){
+            if (err) {
                 console.log(err);
                 return;
             }
@@ -67,18 +67,12 @@ module.exports = {
             });
         });
     },
-    deleteUsers: (req, res)=>{
+    deleteUsers: (req, res) => {
         const data = req.body;
-        getUsersbyUserId(id, (err, results)=>{
-            if(err){
+        deleteUsers(data, (err, results) => {
+            if (err) {
                 console.log(err);
                 return;
-            }
-            if(!results){
-                return res.json({
-                    success: 0,
-                    message: "record not found"
-                });
             }
             return res.json({
                 success: 1,
@@ -86,22 +80,35 @@ module.exports = {
             });
         });
     },
-    login: (req,res)=>{
+    login: (req, res) => {
         const body = req.body;
-        getUsersbyUserEmail(body, email, (err,results)=>{
-            if(err){
+       getUsersbyUserEmail(body.email, (err, results) => {
+            if (err) {
                 console.log(err);
             }
-            if(!results){
+            if (!results) {
                 return res.json({
                     success: 0,
                     data: "invalid email or password"
                 });
             }
             const result = compareSync(body.password, results.password);
-            if(result){
+            if (result) {
                 results.password = undefined;
-                const jsontoken = sign({result:results},);
+                const jsontoken = sign({ result: results }, KEY, {
+                    expiresIn: '1h'
+                });
+                return res.json({
+                    success: 1,
+                    message: "login successfuly",
+                    token: jsontoken
+                });
+            }
+            else {
+                return res.json({
+                    success: 0,
+                    message: "Invalid email or password"
+                });
             }
         });
     }
