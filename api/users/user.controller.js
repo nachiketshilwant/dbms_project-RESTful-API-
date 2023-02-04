@@ -61,6 +61,12 @@ module.exports = {
                 console.log(err);
                 return;
             }
+            if(!results){
+                return res.json({
+                    success: 0,
+                    message: "Updation fail"
+                });
+            }
             return res.json({
                 success: 1,
                 message: "updated successfully"
@@ -95,7 +101,8 @@ module.exports = {
             const result = compareSync(body.password, results.password);
             if (result) {
                 results.password = undefined;
-                const jsontoken = sign({ result: results }, KEY, {
+                // const jsontoken = sign({ result: results }, KEY, {
+                const jsontoken = sign({ result: results }, "qwe1234", {
                     expiresIn: '1h'
                 });
                 return res.json({
